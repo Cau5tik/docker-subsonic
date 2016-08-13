@@ -28,3 +28,4 @@ EXPOSE 4443
 
 CMD []
 ENTRYPOINT ["/startup.sh"]
+
