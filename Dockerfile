@@ -2,10 +2,9 @@ FROM ubuntu
 
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     apt-get update && \
-    apt-get install --yes --force-yes --no-install-recommends --no-install-suggests openjdk-8-jre-headless locales && \
-    apt-get clean 
-
-RUN useradd -d /var/subsonic subsonic && \
+    apt-get install -y --no-install-recommends --no-install-suggests openjdk-8-jre-headless nfs-common locales && \
+    apt-get clean && \
+    useradd -M subsonic && \
     usermod -aG subsonic subsonic
 
 ENV SUBSONIC_VERSION 6.0
@@ -19,7 +18,7 @@ RUN dpkg -i /tmp/subsonic-$SUBSONIC_VERSION.deb && rm -f /tmp/*.deb
 # If you mount a volume over /var/subsonic, create symlinks
 # <host-dir>/var/subsonic/transcode/ffmpeg -> /usr/local/bin/ffmpeg
 # <host-dir>/var/subsonic/transcode/lame -> /usr/local/bin/lame
-RUN ln /var/subsonic/transcode/ffmpeg /var/subsonic/transcode/lame /usr/local/bin
+RUN ln /var/subsonic/transcode/ffmpeg /var/subsonic/transcode/lame /usr/local/bin && mkdir /mnt/music
 
 VOLUME /var/subsonic
 

@@ -27,6 +27,8 @@ export LC_ALL=en_US.UTF-8
 
 quiet=0
 
+mount -t nfs 192.168.15.109:/tank/music /mnt/music
+
 usage() {
     echo "Usage: subsonic.sh [options]"
     echo "  --help               This small usage guide."
