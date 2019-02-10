@@ -27,8 +27,6 @@ export LC_ALL=en_US.UTF-8
 
 quiet=0
 
-mount -t nfs 192.168.15.109:/tank/music /mnt/music
-
 usage() {
     echo "Usage: subsonic.sh [options]"
     echo "  --help               This small usage guide."
@@ -62,7 +60,7 @@ usage() {
 while [ $# -ge 1 ]; do
     case $1 in
         debug)
-            exec /bin/bash
+            exec /bin/sh
             ;;
         --help)
             usage
@@ -117,10 +115,12 @@ mkdir -p \
 LOG=${SUBSONIC_HOME}/subsonic_sh.log
 truncate -s0 ${LOG}
 
-    
+chown -R ${SUBSONIC_USER}:${SUBSONIC_USER} /var/subsonic
+
 cd /usr/share/subsonic
 
-exec /usr/bin/java -Xmx${SUBSONIC_MAX_MEMORY}m \
+exec su ${SUBSONIC_USER} sh -c "\
+    /usr/bin/java -Xmx${SUBSONIC_MAX_MEMORY}m \
     -Dsubsonic.home=${SUBSONIC_HOME} \
     -Dsubsonic.host=${SUBSONIC_HOST} \
     -Dsubsonic.port=${SUBSONIC_PORT} \
@@ -131,4 +131,4 @@ exec /usr/bin/java -Xmx${SUBSONIC_MAX_MEMORY}m \
     -Dsubsonic.defaultPlaylistFolder=${SUBSONIC_DEFAULT_PLAYLIST_FOLDER} \
     -Djava.awt.headless=true \
     -verbose:gc \
-    -jar subsonic-booter-jar-with-dependencies.jar >> ${LOG} 2>&1
+    -jar subsonic-booter-jar-with-dependencies.jar >> ${LOG} 2>&1 "
